@@ -1,6 +1,42 @@
 import Head from 'next/head'
-
+import React, { useState, useRef } from 'react'
 export default function Home() {
+  const [bill, setBill] = useState('') // string field for the placeholder to work
+  const [tipPercent, setTipPercent] = useState(0)
+  const [numberOfPeople, setNumberOfPeople] = useState('') // string field for the placeholder to work
+  const [isTipPercentSelected, setIsTipPercentSelected] = useState(0)
+  const [customTip, setCustomTip] = useState('') // handle custom button display
+
+  const tipRate = [5, 10, 15, 25, 50]
+  const customRef = useRef(null)
+
+  const calculateTipAmount = () => {
+    return Number(bill) == 0 || tipPercent == 0 || Number(numberOfPeople) == 0
+      ? 0
+      : (
+          (Number(bill) * Number(tipPercent)) /
+          100 /
+          Number(numberOfPeople)
+        ).toFixed(2)
+  }
+
+  const calculateTotalPerPerson = () => {
+    return Number(bill) == 0 || tipPercent == 0 || Number(numberOfPeople) == 0
+      ? 0
+      : (
+          (Number(bill) * (1 + tipPercent / 100)) /
+          Number(numberOfPeople)
+        ).toFixed(2)
+  }
+
+  const resetStates = () => {
+    setBill('')
+    setTipPercent(0)
+    setNumberOfPeople('')
+    setIsTipPercentSelected(0)
+    setCustomTip('')
+  }
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
       <Head>
@@ -16,7 +52,13 @@ export default function Home() {
           <div className="mt-2 flex items-center justify-center rounded-lg bg-light-grayish-cyan2 p-2 focus-within:ring-2 focus-within:ring-strong-cyan">
             <img src="/icon-dollar.svg" />
             <input
+              onChange={(e) => {
+                setBill(e.target.value)
+              }}
+              value={bill}
+              placeholder="0"
               type="number"
+              onWheel={(e) => e.currentTarget.blur()}
               className="w-11/12 bg-light-grayish-cyan2 text-right text-2xl font-bold text-very-dark-cyan focus:outline-none "
             />
           </div>
@@ -27,24 +69,40 @@ export default function Home() {
             Select Tip %
           </h2>
           <div className="mt-5 grid grid-cols-2 gap-4">
-            <button className="rounded-md bg-very-dark-cyan p-2 text-2xl font-semibold text-white">
-              5%
-            </button>
-            <button className="rounded-md bg-very-dark-cyan p-2 text-2xl font-semibold text-white">
-              10%
-            </button>
-            <button className="rounded-md bg-very-dark-cyan p-2 text-2xl font-semibold text-white">
-              15%
-            </button>
-            <button className="rounded-md bg-very-dark-cyan p-2 text-2xl font-semibold text-white">
-              25%
-            </button>
-            <button className="rounded-md bg-very-dark-cyan p-2 text-2xl font-semibold text-white">
-              50%
-            </button>
-            <button className="rounded-md bg-light-grayish-cyan2 p-2 text-2xl font-semibold text-dark-grayish-cyan">
-              Custom
-            </button>
+            {tipRate.map((tipPercent) => (
+              <button
+                key={tipPercent}
+                onClick={() => {
+                  setTipPercent(Number(tipPercent))
+                  setIsTipPercentSelected(tipPercent)
+                  setCustomTip('')
+                }}
+                className={`rounded-md ${
+                  isTipPercentSelected == tipPercent
+                    ? 'bg-strong-cyan'
+                    : `bg-very-dark-cyan`
+                } p-2 text-2xl font-semibold text-white`}
+              >
+                {tipPercent}
+              </button>
+            ))}
+
+            <input
+              ref={customRef}
+              placeholder="CUSTOM"
+              value={customTip}
+              onClick={(e) => setIsTipPercentSelected(0)}
+              onChange={(e) => {
+                setCustomTip(e.target.value)
+                // if any number is entered
+                if (e.target.value != 'CUSTOM') {
+                  setTipPercent(Number(e.target.value))
+                }
+              }}
+              onWheel={(e) => e.currentTarget.blur()}
+              type="number"
+              className="rounded-md bg-light-grayish-cyan2 p-2 text-center text-2xl font-semibold text-dark-grayish-cyan focus-within:ring-2 focus-within:ring-strong-cyan focus:outline-none"
+            />
           </div>
         </div>
 
@@ -55,6 +113,10 @@ export default function Home() {
           <div className="mt-2 flex items-center justify-center rounded-lg bg-light-grayish-cyan2 p-2 focus-within:ring-2 focus-within:ring-strong-cyan">
             <img src="/icon-person.svg" />
             <input
+              onChange={(e) => setNumberOfPeople(e.target.value)}
+              placeholder="0"
+              onWheel={(e) => e.currentTarget.blur()}
+              value={numberOfPeople}
               type="number"
               className="w-11/12 bg-light-grayish-cyan2 text-right text-2xl font-bold text-very-dark-cyan focus:outline-none "
             />
@@ -67,7 +129,9 @@ export default function Home() {
               <h2 className="font-semibold text-white">Tip Amount</h2>
               <p className="text-sm text-dark-grayish-cyan-2">/ person</p>
             </div>
-            <div className="text-3xl font-bold text-strong-cyan">$4.27</div>
+            <div className="text-3xl font-bold text-strong-cyan">
+              ${calculateTipAmount()}
+            </div>
           </div>
 
           <div className="mt-6 flex items-center justify-between">
@@ -75,11 +139,18 @@ export default function Home() {
               <h2 className="font-semibold text-white">Total</h2>
               <p className="text-sm text-dark-grayish-cyan-2">/ person</p>
             </div>
-            <div className="text-3xl font-bold text-strong-cyan">$4.27</div>
+            <div className="text-3xl font-bold text-strong-cyan">
+              ${calculateTotalPerPerson()}
+            </div>
           </div>
 
           <div className="mt-8 rounded-md bg-strong-cyan p-2 text-center">
-            <button className="text-xl font-bold text-very-dark-cyan">
+            <button
+              className="w-full text-xl font-bold text-very-dark-cyan"
+              onClick={() => {
+                resetStates()
+              }}
+            >
               RESET
             </button>
           </div>

@@ -86,7 +86,7 @@ export default function Home() {
                       : `bg-very-dark-cyan`
                   } p-2 text-2xl font-semibold text-white`}
                 >
-                  {tipPercent}
+                  {tipPercent}%
                 </button>
               ))}
 

@@ -45,7 +45,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex w-full flex-1 flex-col rounded-t-3xl bg-white px-8 py-10 md:grid md:grid-cols-2 md:gap-10 md:rounded-b-3xl">
+      <main className="flex w-full flex-1 flex-col rounded-t-3xl bg-white px-8 py-10 md:mt-4 md:grid md:grid-cols-2 md:gap-10 md:rounded-b-3xl">
         {/**Switch from flex to grid when the screen size is larger than md(768px) break point */}
         <div>
           <div>

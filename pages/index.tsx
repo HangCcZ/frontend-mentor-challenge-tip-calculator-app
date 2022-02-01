@@ -71,7 +71,7 @@ export default function Home() {
             <h2 className="text-md font-semibold text-dark-grayish-cyan">
               Select Tip %
             </h2>
-            <div className="mt-5 grid grid-cols-2 gap-4">
+            <div className="mt-5 grid grid-cols-2 gap-4 md:grid-cols-3">
               {tipRate.map((tipPercent) => (
                 <button
                   key={tipPercent}

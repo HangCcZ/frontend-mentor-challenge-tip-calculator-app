@@ -174,7 +174,7 @@ export default function Home() {
             </div>
           </div>
           {/** Reset Button */}
-          <div className="mt-8 rounded-md bg-strong-cyan p-2 text-center md:mt-48">
+          <div className="mt-8 rounded-md bg-strong-cyan p-2 text-center md:mt-32">
             <button
               className="w-full text-xl font-bold text-very-dark-cyan"
               onClick={() => {
